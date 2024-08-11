@@ -1,17 +1,19 @@
 import mongoose, { Schema } from "mongoose";
 
 
-const ChatsSchema = new Schema(
+const ChatsSchema = new mongoose.Schema(
   {
     senderID: {
-      type:Schema.Types.ObjectId,
-      ref:"Members"
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Members"
     },
     canUpdate: {
       type: Boolean,
       default: true,
     },
     targetedMsgID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Chats',
       default: null,
     },
     msg: {
@@ -30,4 +32,4 @@ const ChatsSchema = new Schema(
   { timestamps: true }
 );
 
-export const Chats =new mongoose.model('Chats',ChatsSchema,'Chats')
+export const Chats = new mongoose.model('Chats', ChatsSchema, 'Chats')
