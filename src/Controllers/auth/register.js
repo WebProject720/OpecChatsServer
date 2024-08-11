@@ -3,7 +3,6 @@ import { ApiResponse } from "../../utils/ApiResponse.js";
 import { User } from '../../Models/models.js'
 import bcrypt from 'bcrypt'
 import { sendMail } from "../../utils/email.js";
-import { createToken } from "../../utils/getToken.js";
 import 'dotenv/config'
 
 export const register = async (req, res) => {
@@ -41,6 +40,5 @@ export const register = async (req, res) => {
 
 
     return res
-        .cookie(process.env.TokenName, createToken({ _id: response._id, email: response.email }))
         .json(new ApiResponse('user created successfully'))
 }

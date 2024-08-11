@@ -1,7 +1,8 @@
 import { otp, User } from "../../Models/models.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
-
+import { createToken } from "../../utils/getToken.js";
+import 'dotenv/config'
 
 export const verify = async (req, res) => {
     const { email, username, OTP } = req.body;
@@ -35,9 +36,11 @@ export const verify = async (req, res) => {
             )
         }
         await otp.deleteOne({ _id: doc._id });
-        return res.json(
-            new ApiResponse('User verified')
-        )
+        return res
+            .cookie(process.env.TokenName, createToken({ _id: user._id, email: user.email }))
+            .json(
+                new ApiResponse('User verified')
+            )
     } else {
         return res.json(
             new ApiResponse('Invalid OTP')
