@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+import 'dotenv/config'
 import { otp } from '../Models/models.js';
 
 const genOTP = () => {
@@ -23,19 +24,17 @@ export const sendMail = async (tagertEmail) => {
             from: process.env.EMAIL_SENDER,
             to: tagertEmail,
             subject: "OpecChats || One Time Password",
-            html: renderEmailTemplate(OTP, tagertEmail),
+            html: `<Html>
+                        <Text>Welcome <strong> ${tagertEmail}</strong>,</Text><br/>
+                        <Text>Your OTP is: <b> ${OTP}</b></Text><br/>
+                        <Text>Please use this OTP to proceed with your action.</Text><br/>
+                        <Text>Thank you!</Text>
+                    </Html>`,
         };
 
         const email = await transport.sendMail(mailOptions);
         if (!email) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: "Mail not send !",
-                    OTP: null,
-                },
-                { status: 400 }
-            );
+            return false
         }
         const del = await otp.deleteOne({ email: tagertEmail });
         const OTPdoc = new otp({
@@ -43,6 +42,7 @@ export const sendMail = async (tagertEmail) => {
             OTP,
         });
         await OTPdoc.save();
+
         return true
     } catch (error) {
         return false
