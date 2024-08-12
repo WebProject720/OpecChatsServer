@@ -4,17 +4,29 @@ import { User } from '../../Models/models.js'
 import 'dotenv/config'
 
 export const checkUsername = async (req, res) => {
-    const { username } = req.body;
-    if (!username) {
-        return res.json(new ApiError('Username required'))
-    }
-    const user =await User.findOne({username});
-    if(user){
+    try {
+        const { username } = req.body;
+        if (!username) {
+            return res
+            .status(404)
+            .json(new ApiError('Username required'))
+        }
+        const user =await User.findOne({username});
+        if(user){
+            return res
+            .status(404)
+            .json(
+                new ApiError('username already exits')
+            )
+        }
         return res.json(
-            new ApiError('username already exits')
+            new ApiResponse('username is unique')
+        )
+    } catch (error) {
+        return res
+        .status(500)
+        .json(
+            new ApiError('Server Error')
         )
     }
-    return res.json(
-        new ApiResponse('username is unique')
-    )
 }

@@ -42,6 +42,8 @@ import UserRouter from './Routes/user.router.js';
 app.use('/api/v1/user', UserRouter);
 import authRouter from './Routes/auth.router.js';
 app.use('/api/v1/auth', authRouter);
+import GroupRouter from './Routes/group.router.js';
+app.use('/api/v1/group', GroupRouter);
 
 
 

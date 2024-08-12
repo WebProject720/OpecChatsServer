@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 
-export const GroupSchema= new Schema(
+export const GroupSchema = new Schema(
   {
     groupName: {
       type: String,
@@ -69,4 +69,4 @@ export const GroupSchema= new Schema(
   { timestamps: true }
 );
 
-export const Groups =new mongoose.model('Groups',GroupSchema,'Groups')
+export const Groups = new mongoose.model('Groups', GroupSchema, 'Groups')

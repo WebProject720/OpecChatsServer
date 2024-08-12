@@ -4,17 +4,29 @@ import { sendMail } from "../../utils/email.js";
 
 
 export const email = async (req, res) => {
-    const { email } = req.body;
+    try {
+        const { email } = req.body;
 
-    if (!email) {
-        return res.json(new ApiError('email required'));
-    }
+        if (!email) {
+            return res
+                .status(404)
+                .json(new ApiError('email required'));
+        }
 
-    const response = await sendMail(email);
-    if (!response) {
-        return res.json(new ApiError('Try again', {}, false, 500));
+        const response = await sendMail(email);
+        if (!response) {
+            return res
+                .status(404)
+                .json(new ApiError('Try again', {}, false, 500));
+        }
+        return res.json(
+            new ApiResponse('Email send Successfully', email)
+        )
+    } catch (error) {
+        return res
+            .status(500)
+            .json(
+                new ApiError('Server Error', error)
+            )
     }
-    return res.json(
-        new ApiResponse('Email send Successfully', email)
-    )
 }
