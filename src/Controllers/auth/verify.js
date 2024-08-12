@@ -5,6 +5,13 @@ import { createToken } from "../../utils/getToken.js";
 import 'dotenv/config'
 
 export const verify = async (req, res) => {
+    const CookieOptions = {
+        httpOnly: true,     // Cookie accessible only by web server
+        secure: true,       // Cookie sent only over HTTPS
+        maxAge: 36000000,    // Cookie expiry time in milliseconds
+        sameSite: 'strict', // Cookie sent only to the same site
+        path: '/',
+    }
     try {
         const { email, username, OTP } = req.body;
         if (!OTP) {
@@ -39,8 +46,9 @@ export const verify = async (req, res) => {
                 )
             }
             await otp.deleteOne({ _id: doc._id });
+            const token = createToken({ _id: user._id, email: user.email });
             return res
-                .cookie(process.env.TokenName, createToken({ _id: user._id, email: user.email }))
+                .cookie(process.env.TokenName, token, CookieOptions)
                 .json(
                     new ApiResponse('User verified')
                 )

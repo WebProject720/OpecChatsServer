@@ -7,6 +7,13 @@ import 'dotenv/config'
 
 
 export const login = async (req, res) => {
+    const CookieOptions = {
+        httpOnly: true,     // Cookie accessible only by web server
+        secure: false,       // Cookie sent only over HTTPS
+        maxAge: 36000000,    // Cookie expiry time in milliseconds
+        sameSite: 'strict', // Cookie sent only to the same site
+        path: '/',
+    }
     try {
         const { email, username, password } = req.body;
 
@@ -39,7 +46,7 @@ export const login = async (req, res) => {
         }
         const token = createToken({ _id: user._id, email: user.email });
         return res
-            .cookie(process.env.TokenName, token)
+            .cookie(process.env.TokenName, token, CookieOptions)
             .json(
                 new ApiResponse('login successfully', { token })
             )

@@ -4,6 +4,8 @@ import { email } from "../Controllers/auth/email.js";
 import { login } from "../Controllers/auth/login.js";
 import { verify } from "../Controllers/auth/verify.js";
 import { checkUsername } from '../Controllers/auth/checkUsername.js'
+import { logout } from "../Controllers/auth/logout.js";
+import { auth } from "../middleware/auth.js";
 
 
 
@@ -13,5 +15,6 @@ authRouter.route('/email').post(email)
 authRouter.route('/login').post(login)
 authRouter.route('/verify').post(verify)
 authRouter.route('/checkUsername').post(checkUsername)
+authRouter.route('/logout').post(auth, logout)
 
 export default authRouter;

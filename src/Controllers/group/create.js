@@ -24,6 +24,14 @@ export const createGroup = async (req, res) => {
                 new ApiError('Code Required for Private Group')
             )
         }
+        const checkName = await Groups.findOne({ groupName: name });
+        if (checkName) {
+            return res
+                .status(400)
+                .json(
+                    new ApiError('Group name already in use')
+                )
+        }
 
         const group = new Groups({
             groupName: name,
