@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { User } from "./User.model.js";
 
 
 export const GroupSchema = new Schema(
@@ -68,5 +69,23 @@ export const GroupSchema = new Schema(
   },
   { timestamps: true }
 );
+
+GroupSchema.post('save', async (e, next) => {
+  await User.findOneAndUpdate(
+    { _id: e.admin },
+    {
+      $push: { adminOfGroups: e._id },
+      $inc: { adminOfGroupsCount: 1 }
+    }, {
+    new: true
+  })
+  next();
+})
+
+GroupSchema.pre('remove', { document: false, query: true }, async (doc, next) => {
+  console.log('delete');
+  console.log(doc);
+  next()
+})
 
 export const Groups = new mongoose.model('Groups', GroupSchema, 'Groups')

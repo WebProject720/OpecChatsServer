@@ -11,13 +11,12 @@ export const login = async (req, res) => {
         httpOnly: true,     // Cookie accessible only by web server
         secure: false,       // Cookie sent only over HTTPS
         maxAge: 36000000,    // Cookie expiry time in milliseconds
-        sameSite: 'strict', // Cookie sent only to the same site
+        // sameSite: 'none', // Cookie sent only to the same site
         path: '/',
     }
     try {
-        const { email, username, password } = req.body;
-
-        if (!((email || username) && password)) {
+        const { identifier, password } = req.body;
+        if (!(identifier && password)) {
             return res
                 .status(404)
                 .json(
@@ -26,7 +25,7 @@ export const login = async (req, res) => {
         }
 
         const user = await User.findOne({
-            $or: [{ email }, { username }]
+            $or: [{ email: identifier }, { username: identifier }]
         });
         if (!user) {
             return res

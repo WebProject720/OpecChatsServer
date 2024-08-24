@@ -5,7 +5,7 @@ import { verifyToken } from '../../src/utils/verifyToken.js';
 
 export const auth = async (req, res, next) => {
     const cookie = req?.cookies[process.env.TokenName];
-    
+
     if (!cookie) {
         return res.status(404).json(
             new ApiError('Session not found')
@@ -17,6 +17,6 @@ export const auth = async (req, res, next) => {
             new ApiError('Invalid Session ID')
         )
     }
-    req.body._id = user?._id || false
+    req.body._id = user?._id || false;
     next();
 }

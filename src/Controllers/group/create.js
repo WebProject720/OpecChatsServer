@@ -44,6 +44,7 @@ export const createGroup = async (req, res) => {
         });
 
         const response = await group.save();
+
         if (response) {
             return res
                 .status(200)
@@ -58,6 +59,8 @@ export const createGroup = async (req, res) => {
                 )
         }
     } catch (error) {
+        console.log(error);
+        
         return res.status(500).json(
             new ApiError('Server Error', error)
         )

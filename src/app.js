@@ -19,13 +19,13 @@ app.use(cookieParser());
 
 
 
+var allowlist = process.env.WHITELIST_URL;
 var corsOptions = {
-    origin: '*',
+    origin: allowlist,
     credentials: true,
     optionsSuccessStatus: 200,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
 };
-var allowlist = process.env.WHITELIST_URL;
 app.use(cors(corsOptions))
 
 

@@ -19,7 +19,6 @@ export const userDetails = async (req, res) => {
             $or: [{ email }, { _id }, { username }]
         }).select('-password -token');
 
-
         if (!user) {
             return res
                 .status(404)
