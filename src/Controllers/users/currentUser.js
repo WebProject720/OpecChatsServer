@@ -17,6 +17,6 @@ export const currentuser = async (req, res) => {
         )
     }
     return res.status(200).json(
-        new ApiResponse('Logged User', { user }, true)
+        new ApiResponse('Logged User', user, true)
     )
 }

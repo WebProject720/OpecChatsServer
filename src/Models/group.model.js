@@ -82,10 +82,5 @@ GroupSchema.post('save', async (e, next) => {
   next();
 })
 
-GroupSchema.pre('remove', { document: false, query: true }, async (doc, next) => {
-  console.log('delete');
-  console.log(doc);
-  next()
-})
 
 export const Groups = new mongoose.model('Groups', GroupSchema, 'Groups')
