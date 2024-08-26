@@ -7,10 +7,6 @@ const MembersSchema = new Schema(
             type: Boolean,
             default: false,
         },
-        userID: {
-            type: Schema.Types.ObjectId,
-            ref: "User"
-        },
         username: {
             type: String,
             required: false,

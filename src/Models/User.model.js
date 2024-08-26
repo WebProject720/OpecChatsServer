@@ -24,18 +24,6 @@ export const UserSchema = new Schema(
             type: Boolean,
             default: false,
         },
-        adminOfGroups: {
-            type: [Schema.Types.ObjectId],
-            ref: "Groups",
-        },
-        adminOfGroupsCount: {
-            type: Number,
-            default: 0,
-        },
-        joinedGroups: {
-            type: [Schema.Types.ObjectId],
-            ref: "Groups",
-        },
         groupAllowed: {
             type: Number,
             default: 3,

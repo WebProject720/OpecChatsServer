@@ -49,13 +49,17 @@ export const GroupSchema = new Schema(
       type: [Schema.Types.ObjectId],
       ref: "Members",
     },
+    permatentMember: {
+      type: [Schema.Types.ObjectId],
+      ref: "User",
+    },
     waitingMember: {
       type: [Schema.Types.ObjectId],
-      ref: "Members",
+      ref: "User",
     },
     removedMembers: {
       type: [Schema.Types.ObjectId],
-      ref: "Members",
+      ref: "User",
     },
     blockedMembers: {
       type: [Schema.Types.ObjectId],
@@ -70,17 +74,17 @@ export const GroupSchema = new Schema(
   { timestamps: true }
 );
 
-GroupSchema.post('save', async (e, next) => {
-  await User.findOneAndUpdate(
-    { _id: e.admin },
-    {
-      $push: { adminOfGroups: e._id },
-      $inc: { adminOfGroupsCount: 1 }
-    }, {
-    new: true
-  })
-  next();
-})
+// GroupSchema.post('save', async (e, next) => {
+//   await User.findOneAndUpdate(
+//     { _id: e.admin },
+//     {
+//       $push: { adminOfGroups: e._id },
+//       $inc: { adminOfGroupsCount: 1 }
+//     }, {
+//     new: true
+//   })
+//   next();
+// })
 
 
 export const Groups = new mongoose.model('Groups', GroupSchema, 'Groups')

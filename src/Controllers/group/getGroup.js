@@ -4,14 +4,14 @@ import { getGroup } from "../../components/getGroup.js";
 
 export const getGroupDetails = async (req, res) => {
     try {
-        const { _id, groupID, name } = req.body;
+        const { _id, groupID, idetifier } = req.body;
 
-        if (!(groupID || name)) {
+        if (!(groupID || idetifier)) {
             return res.status(400).json(
                 new ApiError('Group details must required', undefined, false)
             )
         }
-        const group = await getGroup(groupID, name)
+        const group = await getGroup(groupID, idetifier)
 
         if (!group) {
             return res.status(404).json(

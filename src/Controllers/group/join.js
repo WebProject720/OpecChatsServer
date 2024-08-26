@@ -46,13 +46,14 @@ export const join = async (req, res) => {
                     new ApiResponse('Request To Join Group', newGroup, true)
                 )
         }
+        //public group
         newGroup = await Groups.findOneAndUpdate(
             {
                 $or: [{ _id: new Types.ObjectId(isID) }, { groupName: identifier }]
             },
             {
                 $push: {
-                    memberLists: _id
+                    permatentMember: _id
                 }
             },
             {
