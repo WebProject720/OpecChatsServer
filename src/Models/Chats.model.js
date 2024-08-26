@@ -1,11 +1,11 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
 
 const ChatsSchema = new mongoose.Schema(
   {
     senderID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Members"
+      ref: "User"
     },
     canUpdate: {
       type: Boolean,

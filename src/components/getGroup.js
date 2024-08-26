@@ -4,9 +4,17 @@ import { Groups } from "../Models/models.js";
 
 
 export const getGroup = async (groupID, identifier) => {
+
+    const userInfo = {
+        _id: 1,
+        username: 1,
+        email: 1,
+        profileImage:1
+    }
+
     try {
         if (!(groupID || identifier)) {
-            return false
+            return false;
         }
         const group = await Groups.aggregate(
             [
@@ -23,11 +31,7 @@ export const getGroup = async (groupID, identifier) => {
                         as: 'admin',
                         pipeline: [
                             {
-                                $project: {
-                                    _id: 1,
-                                    username: 1,
-                                    email: 1
-                                }
+                                $project:  userInfo
                             }
                         ]
                     }
@@ -35,16 +39,13 @@ export const getGroup = async (groupID, identifier) => {
                 {
                     $lookup: {
                         from: 'User',
-                        localField: 'memberLists',
+                        localField: 'permanentMember',
                         foreignField: '_id',
-                        as: 'memberLists',
+                        as: 'permanentMember',
                         pipeline: [
                             {
-                                $project: {
-                                    _id: 1,
-                                    username: 1,
-                                    email: 1
-                                }
+                                $project:  userInfo
+                                
                             }
                         ]
                     }
@@ -57,10 +58,76 @@ export const getGroup = async (groupID, identifier) => {
                         as: 'waitingMember',
                         pipeline: [
                             {
-                                $project: {
-                                    _id: 1,
-                                    username: 1,
-                                    email: 1
+                                $project:  userInfo
+                                
+                            }
+                        ]
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'Members',
+                        localField: 'memberLists',
+                        foreignField: '_id',
+                        as: 'memberLists',
+                        pipeline: [
+                            {
+                                $project:  userInfo
+                                
+                            }
+                        ]
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'User',
+                        localField: 'removedMembers',
+                        foreignField: '_id',
+                        as: 'removedMembers',
+                        pipeline: [
+                            {
+                                $project:  userInfo
+                                
+                            }
+                        ]
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'User',
+                        localField: 'blockedMembers',
+                        foreignField: '_id',
+                        as: 'blockedMembers',
+                        pipeline: [
+                            {
+                                $project:  userInfo
+                            }
+                        ]
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'Chats',
+                        localField: 'chatID',
+                        foreignField: '_id',
+                        as: 'chatID',
+                        pipeline: [
+                            {
+                                $lookup: {
+                                    from: 'User',
+                                    localField: 'senderID',
+                                    foreignField: '_id',
+                                    as: 'sender',
+                                    pipeline: [
+                                        {
+                                            $project: userInfo
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                $set: {
+                                    sender: { $arrayElemAt: ["$sender", 0] }
                                 }
                             }
                         ]
@@ -71,8 +138,7 @@ export const getGroup = async (groupID, identifier) => {
                         admin: { $arrayElemAt: ["$admin", 0] }
                     }
                 }
-            ]
-        )
+            ])
         if (!group?.length) return false
         return group[0];
     } catch (error) {

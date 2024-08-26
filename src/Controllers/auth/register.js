@@ -7,13 +7,13 @@ import 'dotenv/config'
 
 export const register = async (req, res) => {
     try {
-        const { email, username, password,_id } = req.body;
-        if(_id){
-            return res
-                .status(400)
-                .json(
-                    new ApiError('Please Logout First')
-                )
+        const { email, username, password } = req.body;
+        const cookie = req?.cookies[process.env.TokenName];
+
+        if (cookie) {
+            return res.status(300).json(
+                new ApiError('Session already running')
+            )
         }
         if (!(email && username && password)) {
             return res

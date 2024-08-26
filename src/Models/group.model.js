@@ -37,8 +37,8 @@ export const GroupSchema = new Schema(
       default: true,
     },
     chatID: {
-      type: Schema.Types.ObjectId,
-      ref: "ChatHistory",
+      type: [Schema.Types.ObjectId],
+      ref: "Chats",
     },
     extraMemberAllowed: { type: Number, default: 0 },
     isSubscribed: {
@@ -49,7 +49,7 @@ export const GroupSchema = new Schema(
       type: [Schema.Types.ObjectId],
       ref: "Members",
     },
-    permatentMember: {
+    permanentMember: {
       type: [Schema.Types.ObjectId],
       ref: "User",
     },

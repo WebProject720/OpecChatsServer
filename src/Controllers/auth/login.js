@@ -17,14 +17,15 @@ export const login = async (req, res) => {
         path: '/',
     }
     try {
-        const { identifier, password,_id } = req.body;
-        if(_id){
-            return res
-                .status(400)
-                .json(
-                    new ApiError('Please Logout First')
-                )
+        const { identifier, password } = req.body;
+        const cookie = req?.cookies[process.env.TokenName];
+
+        if (cookie) {
+            return res.status(300).json(
+                new ApiError('Session already running')
+            )
         }
+
         if (!(identifier && password)) {
             return res
                 .status(404)
