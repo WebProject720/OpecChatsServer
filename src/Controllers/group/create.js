@@ -19,7 +19,7 @@ export const createGroup = async (req, res) => {
                 new ApiError('Name and Admin Required')
             )
         }
-        if (code !== type) {
+        if ((type == true && code == false) || (code == true && type == false)) {
             return res.status(400).json(
                 new ApiError('Code Required for Private Group')
             )
@@ -60,7 +60,7 @@ export const createGroup = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        
+
         return res.status(500).json(
             new ApiError('Server Error', error)
         )

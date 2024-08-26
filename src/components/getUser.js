@@ -3,14 +3,16 @@ import { User } from "../Models/models.js"
 
 export const getUser = async (_id, identifier) => {
     try {
+        
         if (!(_id || identifier)) {
             return false
         }
-
+        const id = Types.ObjectId.isValid(_id) ? _id : 'a3b2c1d4e5f60718293a4b5c';
+        
         const user = await User.aggregate(
             [
                 {
-                    $match: { $or: [{ _id: new Types.ObjectId(_id) }, { email: identifier }, { username: identifier }] }
+                    $match: { $or: [{ email: identifier }, { username: identifier }, { _id: new Types.ObjectId(id) },] }
                 },
                 {
                     $lookup: {
@@ -34,6 +36,7 @@ export const getUser = async (_id, identifier) => {
                 }
             ]
         )
+        
         if (!user.length) return false;
         return user[0];
     } catch (error) {

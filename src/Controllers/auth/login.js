@@ -17,7 +17,14 @@ export const login = async (req, res) => {
         path: '/',
     }
     try {
-        const { identifier, password } = req.body;
+        const { identifier, password,_id } = req.body;
+        if(_id){
+            return res
+                .status(400)
+                .json(
+                    new ApiError('Please Logout First')
+                )
+        }
         if (!(identifier && password)) {
             return res
                 .status(404)
@@ -25,13 +32,14 @@ export const login = async (req, res) => {
                     new ApiError('All fileds required')
                 )
         }
-        const _id = identifier.length < 24 ? '66cb64e7ad5783c372a7f00c' : identifier
+        const validID = Types.ObjectId.isValid(identifier) ? identifier : 'a3b2c1d4e5f60718293a4b5c';
 
         const user = await User.findOne(
             {
-                $or: [{ email: identifier }, { username: identifier }, { _id: new Types.ObjectId(_id) }]
+                $or: [{ email: identifier }, { username: identifier }, { _id: new Types.ObjectId(validID) }]
             }
-        )
+        ).select('password')
+
         if (!user) {
             return res
                 .status(404)
@@ -49,11 +57,11 @@ export const login = async (req, res) => {
                 )
         }
         const token = createToken({ _id: user._id, email: user.email });
-        const fullUser = await getUser(identifier);
+        const fullUser = await getUser(validID, identifier);
         return res
             .cookie(process.env.TokenName, token, CookieOptions)
             .json(
-                new ApiResponse('login successfully', { token, user:fullUser })
+                new ApiResponse('login successfully', { token, user: fullUser })
             )
     } catch (error) {
         console.log(error);

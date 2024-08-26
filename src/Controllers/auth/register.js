@@ -7,8 +7,14 @@ import 'dotenv/config'
 
 export const register = async (req, res) => {
     try {
-        const { email, username, password } = req.body;
-
+        const { email, username, password,_id } = req.body;
+        if(_id){
+            return res
+                .status(400)
+                .json(
+                    new ApiError('Please Logout First')
+                )
+        }
         if (!(email && username && password)) {
             return res
                 .status(404)

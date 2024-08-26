@@ -11,6 +11,7 @@ export const currentuser = async (req, res) => {
         )
     }
     const user = await getUser(_id);
+    
     if (!user) {
         return res.status(400).json(
             new ApiError('User not found', undefined, false)

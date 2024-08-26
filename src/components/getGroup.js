@@ -33,6 +33,40 @@ export const getGroup = async (groupID, identifier) => {
                     }
                 },
                 {
+                    $lookup: {
+                        from: 'User',
+                        localField: 'memberLists',
+                        foreignField: '_id',
+                        as: 'memberLists',
+                        pipeline: [
+                            {
+                                $project: {
+                                    _id: 1,
+                                    username: 1,
+                                    email: 1
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'User',
+                        localField: 'waitingMember',
+                        foreignField: '_id',
+                        as: 'waitingMember',
+                        pipeline: [
+                            {
+                                $project: {
+                                    _id: 1,
+                                    username: 1,
+                                    email: 1
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
                     $set: {
                         admin: { $arrayElemAt: ["$admin", 0] }
                     }
