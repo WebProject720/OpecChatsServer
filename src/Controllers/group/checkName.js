@@ -22,6 +22,10 @@ export const checkName = async (req, res) => {
             .json('Group name is unique');
 
     } catch (error) {
-
+        return res
+            .status(500)
+            .json(
+                new ApiError('Server Error')
+            )
     }
 }

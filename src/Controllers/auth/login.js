@@ -4,6 +4,7 @@ import { User } from '../../Models/models.js'
 import bcrypt from 'bcrypt'
 import { createToken } from "../../utils/getToken.js";
 import 'dotenv/config'
+import { getUser } from "../../components/getUser.js";
 
 
 export const login = async (req, res) => {
@@ -24,9 +25,7 @@ export const login = async (req, res) => {
                 )
         }
 
-        const user = await User.findOne({
-            $or: [{ email: identifier }, { username: identifier }]
-        });
+        const user = await getUser(identifier)
         if (!user) {
             return res
                 .status(404)
@@ -47,7 +46,7 @@ export const login = async (req, res) => {
         return res
             .cookie(process.env.TokenName, token, CookieOptions)
             .json(
-                new ApiResponse('login successfully', { token })
+                new ApiResponse('login successfully', { token, user })
             )
     } catch (error) {
         return res

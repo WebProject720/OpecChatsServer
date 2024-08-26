@@ -1,16 +1,16 @@
 import { Types } from "mongoose";
 import { User } from "../Models/models.js"
 
-export const getUser = async (_id) => {
+export const getUser = async (_id, identifier) => {
     try {
-        if (!_id) {
+        if (!(_id || identifier)) {
             return false
         }
 
         const user = await User.aggregate(
             [
                 {
-                    $match: { _id: new Types.ObjectId(_id) }
+                    $match: { $or: [{ _id: new Types.ObjectId(_id) }, { email: identifier }, { username: identifier }] }
                 },
                 {
                     $lookup: {

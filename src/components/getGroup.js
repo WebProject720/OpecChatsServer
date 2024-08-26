@@ -3,16 +3,16 @@ import { Groups } from "../Models/models.js";
 
 
 
-export const getGroup = async (groupID, name) => {
+export const getGroup = async (groupID, identifier) => {
     try {
-        if (!(groupID || name)) {
+        if (!(groupID || identifier)) {
             return false
         }
         const group = await Groups.aggregate(
             [
                 {
                     $match: {
-                        $or: [{ _id: new Types.ObjectId(groupID) }, { groupName: name }]
+                        $or: [{ _id: new Types.ObjectId(groupID) }, { groupName: identifier }]
                     }
                 },
                 {

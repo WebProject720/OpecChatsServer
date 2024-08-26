@@ -27,7 +27,7 @@ export const getGroupDetails = async (req, res) => {
         )
     } catch (error) {
         console.log(error);
-        
+
         return res.status(500).json(
             new ApiError(
                 'Server Error',
