@@ -8,7 +8,6 @@ export const getUser = async (_id, identifier) => {
             return false
         }
         const id = Types.ObjectId.isValid(_id) ? _id : 'a3b2c1d4e5f60718293a4b5c';
-        console.log(_id, identifier);
 
         const user = await User.aggregate(
             [
