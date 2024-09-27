@@ -12,7 +12,7 @@ export const login = async (req, res) => {
     const CookieOptions = {
         httpOnly: true,     // Cookie accessible only by web server
         secure: true,       // Cookie sent only over HTTPS
-        maxAge: new Date(Date.now() + 36000000),    // Cookie expiry time in milliseconds
+        expires: new Date(Date.now() + 36000000),    // Cookie expiry time in milliseconds
         sameSite: 'none', // Cookie sent only to the same site
         path: '/',
     }
