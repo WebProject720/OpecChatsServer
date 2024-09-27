@@ -12,7 +12,7 @@ export const login = async (req, res) => {
     const CookieOptions = {
         httpOnly: true,     // Cookie accessible only by web server
         secure: true,       // Cookie sent only over HTTPS
-        maxAge: 36000000,    // Cookie expiry time in milliseconds
+        maxAge: new Date(Date.now() + 36000000),    // Cookie expiry time in milliseconds
         sameSite: 'none', // Cookie sent only to the same site
         path: '/',
     }
@@ -21,7 +21,7 @@ export const login = async (req, res) => {
         const cookie = req?.cookies[process.env.TokenName];
 
         if (cookie) {
-            return res.status(300).json(
+            return res.status(404).json(
                 new ApiError('Session already running')
             )
         }
