@@ -57,7 +57,6 @@ export const getUser = async (_id, identifier) => {
                 }
             ]
         )
-        console.log(user);
 
         if (!user.length) return false;
         return user[0];

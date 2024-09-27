@@ -16,6 +16,7 @@ export const login = async (req, res) => {
         sameSite: 'none', // Cookie sent only to the same site
         path: '/',
     }
+    
     try {
         const { identifier, password } = req.body;
         const cookie = req?.cookies[process.env.TokenName];
