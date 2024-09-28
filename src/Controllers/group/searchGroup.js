@@ -5,6 +5,7 @@ import { ApiResponse } from "../../utils/ApiResponse.js";
 
 export const searchGroup = async (req, res) => {
     const { q } = req.body;
+    
     if (!q) {
         return res.status(404).json(
             new ApiError('Identifier must required', {}, false, 404)
