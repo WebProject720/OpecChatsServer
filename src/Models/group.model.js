@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { User } from "./User.model.js";
 
 
 export const GroupSchema = new Schema(
