@@ -4,6 +4,7 @@ import express from 'express'
 import cors from 'cors'
 import { Server } from 'socket.io';
 import { createServer } from 'node:http'
+import 'dotenv/config'
 
 const app = express();
 const server = createServer(app)
@@ -21,12 +22,19 @@ app.use(cookieParser());
 
 
 var allowlist = process.env.WHITELIST_URL;
-var corsOptions = {
+const isProduction = process.env.PRODUCTION == 'true';
+
+var corsOptions = isProduction ? {
     origin: allowlist,
     credentials: true,
     optionsSuccessStatus: 200,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
+} : {
+    origin: 'http://localhost:3000',
+    credentials: true
 };
+
+
 app.use(cors(corsOptions))
 
 
@@ -80,7 +88,7 @@ app.get('/', (req, res) => {
       </body>
       </html>
     `);
-  });
+});
 
 
 
