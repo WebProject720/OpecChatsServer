@@ -9,14 +9,15 @@ import { getUser } from "../../components/getUser.js";
 
 
 export const login = async (req, res) => {
+    const production = process.env.PRODUCTION;
     const CookieOptions = {
         httpOnly: true,     // Cookie accessible only by web server
-        secure: true,       // Cookie sent only over HTTPS
+        secure: production,       // Cookie sent only over HTTPS
         expires: new Date(Date.now() + 36000000),    // Cookie expiry time in milliseconds
-        sameSite: 'none', // Cookie sent only to the same site
+        sameSite: production ? 'none' : 'Lax', // Cookie sent only to the same site
         path: '/',
     }
-    
+
     try {
         const { identifier, password } = req.body;
         const cookie = req?.cookies[process.env.TokenName];
