@@ -1,5 +1,9 @@
 // import { io } from "../app";
 
-// io.on('chats', (socket) => {
-//     console.log("User Connected");
+// io.on('connection', (socket) => {
+//     console.log("User Connected",socket.id);
+//     socket.on('chats',(msg)=>{
+//         console.log(msg);
+//         io.emit('chats','You are at Emit')
+//     })
 // })

@@ -56,18 +56,18 @@ export const send = async (req, res) => {
             }
         )
 
-        return res
+        return res ? res
             .status(200)
             .json(
                 new ApiResponse('Msg send', { newGroup }, true, 200)
-            )
+            ) : new ApiResponse('Msg send',  chatDoc , true, 200)
     } catch (error) {
         console.log(error);
 
-        return res
+        return res ? res
             .status(500)
             .json(
                 new ApiError('Server Error', undefined, false, 500)
-            )
+            ) : new ApiError('Server Error', undefined, false, 500)
     }
 }

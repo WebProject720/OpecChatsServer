@@ -5,10 +5,10 @@ import cors from 'cors'
 import { Server } from 'socket.io';
 import { createServer } from 'node:http'
 import 'dotenv/config'
-
+import { verifyToken } from './utils/verifyToken.js';
 const app = express();
 const server = createServer(app)
-export const io = new Server(server)
+
 
 app.use(express.json({ limit: "16kb" }))
 app.use(express.urlencoded({ extended: true, limit: "16kb" }))
@@ -35,6 +35,39 @@ var corsOptions = isProduction ? {
 };
 
 
+import { send } from './Controllers/chats/send.js';
+export const io = new Server(server)
+io.on('connection', async (socket) => {
+
+    socket.on('join-group',(group)=>{
+        socket.join(group);
+    })
+    socket.on('disconnect',()=>{})
+    socket.on('group-msg', async (msg) => {
+        try {
+
+            const cookie = (socket.handshake.headers?.cookie).slice(process.env.TokenName.length + 1);
+            const verify = verifyToken(cookie);
+
+            const chatObject = { _id: verify?._id, msg: msg?.msg, identifier: msg?.identifier };
+            const response = await send({ body: chatObject }, false);
+
+            if (!response.success) {
+                return
+            }
+
+            io.to(msg.identifier).emit('new-msg', response?.data)
+
+        } catch (error) {
+            console.log(error);
+            return;
+        }
+
+    })
+})
+
+
+
 app.use(cors(corsOptions))
 
 
@@ -54,6 +87,7 @@ app.use('/api/v1/auth', authRouter);
 import GroupRouter from './Routes/group.router.js';
 app.use('/api/v1/group', GroupRouter);
 import chatsRouter from './Routes/chats.router.js';
+import { log } from 'node:console';
 app.use('/api/v1/chat', chatsRouter);
 
 
