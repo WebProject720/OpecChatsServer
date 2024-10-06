@@ -37,19 +37,20 @@ export const createGroup = async (req, res) => {
             groupName: name,
             profileImage: image,
             bgImage: bgImage,
-            isGroupPrivate: type || false,
+            isGroupPrivate: type == 'public' || !type ? false : false,
             admin: _id,
             memberAllowedAtSingleTime: memberLimit,
             uniqueCode: code || null
         });
 
         const response = await group.save();
+        delete response.uniqueCode;
 
         if (response) {
             return res
                 .status(200)
                 .json(
-                    new ApiResponse('group created', { _id: response._id })
+                    new ApiResponse('group created', response)
                 )
         } else {
             return res
