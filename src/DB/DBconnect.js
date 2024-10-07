@@ -11,6 +11,7 @@ export const DBconnect = async () => {
         });
     } catch (error) {
         console.log('MongoDB Connection Failled');
+        console.log("Mongo DataBase",error);
         process.exit(1);
     }
 }

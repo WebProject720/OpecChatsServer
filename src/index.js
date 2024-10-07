@@ -10,4 +10,5 @@ DBconnect().then(() => {
     })
 }).catch((error) => {
     console.log('MongoDB Connection Failled');
+    console.log("Server",error);
 })
