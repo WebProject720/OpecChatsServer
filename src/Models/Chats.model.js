@@ -7,6 +7,10 @@ const ChatsSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
     },
+    TempID:{
+      type:String,
+      default:null
+    },
     canUpdate: {
       type: Boolean,
       default: true,

@@ -13,11 +13,14 @@ export const auth = async (req, res, next) => {
             )
         }
         const user = verifyToken(cookie);
+        
+        
         if (!user) {
             return res.status(404).json(
                 new ApiError('Invalid Session ID')
             )
         }
+        
         req.body._id = user?._id || false;
         next();
     } catch (error) {

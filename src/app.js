@@ -39,23 +39,34 @@ import { send } from './Controllers/chats/send.js';
 export const io = new Server(server)
 io.on('connection', async (socket) => {
 
-    socket.on('join-group',(group)=>{
+    socket.on('join-group', (group) => {
         socket.join(group);
     })
-    socket.on('disconnect',()=>{})
+    socket.on('disconnect', () => { })
     socket.on('group-msg', async (msg) => {
         try {
-
-            const cookie = (socket.handshake.headers?.cookie).slice(process.env.TokenName.length + 1);
-            const verify = verifyToken(cookie);
-
-            const chatObject = { _id: verify?._id, msg: msg?.msg, identifier: msg?.identifier };
-            const response = await send({ body: chatObject }, false);
-
-            if (!response.success) {
-                return
+            
+            const cookie = (socket.handshake.headers?.cookie);
+            if (!cookie) {
+                return { msg: "cookie not found" }
             }
-
+            let string = cookie.slice(cookie.indexOf('=') + 1)
+            let verify;
+            try {
+                verify = verifyToken(string);
+            } catch (error) {
+                console.log(error);
+                return { msg: "Token not verified" }
+            }
+            
+            const chatObject = { _id: verify?._id||null, msg: msg?.msg, identifier: msg?.identifier };
+            const response = await send({ body: chatObject }, false);
+            
+            
+            if (!response.success) {
+                return {msg:'Msg not send'}
+            }
+            
             io.to(msg.identifier).emit('new-msg', response?.data)
 
         } catch (error) {
@@ -88,6 +99,7 @@ import GroupRouter from './Routes/group.router.js';
 app.use('/api/v1/group', GroupRouter);
 import chatsRouter from './Routes/chats.router.js';
 import { log } from 'node:console';
+import { ApiResponse } from './utils/ApiResponse.js';
 app.use('/api/v1/chat', chatsRouter);
 
 
