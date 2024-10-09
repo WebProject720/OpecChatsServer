@@ -9,7 +9,7 @@ import { getUser } from "../../components/getUser.js";
 
 
 export const login = async (req, res) => {
-    const production = process.env.PRODUCTION=="true";
+    const production = process.env.PRODUCTION == "true";
     const CookieOptions = {
         httpOnly: true,     // Cookie accessible only by web server
         secure: production,       // Cookie sent only over HTTPS
@@ -21,6 +21,7 @@ export const login = async (req, res) => {
     try {
         const { identifier, password } = req.body;
         const cookie = req?.cookies[process.env.TokenName];
+        const TokenName = process.env.TokenName||'Token';
 
         if (cookie) {
             return res.status(404).json(
@@ -62,7 +63,7 @@ export const login = async (req, res) => {
         const token = createToken({ _id: user._id, email: user.email });
         const fullUser = await getUser(validID, identifier);
         return res
-            .cookie(process.env.TokenName, token, CookieOptions)
+            .cookie(TokenName, token, CookieOptions)
             .json(
                 new ApiResponse('login successfully', { token, user: fullUser })
             )

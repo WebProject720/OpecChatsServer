@@ -6,6 +6,8 @@ import { v4 } from 'uuid'
 export const GuestLogin = (req, res) => {
     const { name } = req.body;
     const production = process.env.PRODUCTION == "true";
+    const TokenName = process.env.GuestTokenName||'GuestToken';
+
     const CookieOptions = {
         httpOnly: true,     // Cookie accessible only by web server
         secure: production,       // Cookie sent only over HTTPS
@@ -13,10 +15,10 @@ export const GuestLogin = (req, res) => {
         sameSite: production ? 'none' : 'Lax', // Cookie sent only to the same site
         path: '/',
     }
-    const guest={ _id: v4(), name: name ? name : "guest" }
+    const guest = { _id: v4(), name: name ? name : "guest" }
     const cookie = createToken(guest);
     return res
-        .cookie(process.env.GuestTokenName, cookie, CookieOptions)
+        .cookie(TokenName, cookie, CookieOptions)
         .json(
             new ApiResponse('login successfully', guest)
         )
