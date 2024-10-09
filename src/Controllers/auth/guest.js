@@ -5,14 +5,14 @@ import { v4 } from 'uuid'
 
 export const GuestLogin = (req, res) => {
     const { name } = req.body;
-    const production = process.env.PRODUCTION == "true";
     const TokenName = process.env.GuestTokenName||'GuestToken';
-
+    
+    const production = process.env.PRODUCTION == "true";
     const CookieOptions = {
         httpOnly: true,     // Cookie accessible only by web server
         secure: production,       // Cookie sent only over HTTPS
         expires: new Date(Date.now() + 36000000),    // Cookie expiry time in milliseconds
-        SameSite: production ? 'None' : 'Lax', // Cookie sent only to the same site
+        sameSite: production ? 'None' : 'Lax', // Cookie sent only to the same site
         path: '/',
     }
     const guest = { _id: v4(), name: name ? name : "guest" }
