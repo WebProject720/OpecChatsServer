@@ -41,11 +41,11 @@ io.on('connection', async (socket) => {
 
     socket.on('join-group', (group) => {
         socket.join(group);
+        io.to(group).emit('new-user-added', { msg: 'Someone Added', activeUsers: io.sockets.adapter.rooms.get(group).size })
     })
     socket.on('disconnect', () => { })
     socket.on('group-msg', async (msg) => {
         try {
-            
             const cookie = (socket.handshake.headers?.cookie);
             if (!cookie) {
                 return { msg: "cookie not found" }
@@ -58,15 +58,15 @@ io.on('connection', async (socket) => {
                 console.log(error);
                 return { msg: "Token not verified" }
             }
-            
-            const chatObject = { _id: verify?._id||null, msg: msg?.msg, identifier: msg?.identifier };
+
+            const chatObject = { _id: verify?._id || null, msg: msg?.msg, identifier: msg?.identifier };
             const response = await send({ body: chatObject }, false);
-            
-            
+
+
             if (!response.success) {
-                return {msg:'Msg not send'}
+                return { msg: 'Msg not send' }
             }
-            
+
             io.to(msg.identifier).emit('new-msg', response?.data)
 
         } catch (error) {
