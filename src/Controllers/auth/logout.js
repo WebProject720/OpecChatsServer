@@ -1,5 +1,6 @@
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
+import 'dotenv/config'
 
 export const logout = async (req, res) => {
     try {
