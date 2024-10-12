@@ -20,16 +20,16 @@ export const auth = async (req, res, next) => {
         }
 
 
-        const user = verifyToken(cookie);
+        const userLogged = verifyToken(cookie);
 
 
-        if (!user) {
+        if (!userLogged) {
             return res.status(404).json(
                 new ApiError('Invalid Session ID')
             )
         }
 
-        req.body._id = user?._id || false;
+        req.body._id = userLogged?._id || false;
         next();
     } catch (error) {
         return res.status(500).json(
