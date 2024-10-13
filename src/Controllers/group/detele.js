@@ -13,7 +13,6 @@ export const deleteGroup = async (req, res) => {
         }
        
         const g = await getGroup(groupID, identifier);
-        console.log(g,_id);
         
         if (g.admin._id != _id) {
             return res.status(404).json(
