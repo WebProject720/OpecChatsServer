@@ -48,6 +48,10 @@ export const GroupSchema = new Schema(
       type: [Schema.Types.ObjectId],
       ref: "Members",
     },
+    TempMembers: {
+      type: [String]
+    }
+    ,
     permanentMember: {
       type: [Schema.Types.ObjectId],
       ref: "User",

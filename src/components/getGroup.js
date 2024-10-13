@@ -134,6 +134,11 @@ export const getGroup = async (groupID, identifier) => {
                     }
                 },
                 {
+                    $project:{
+                        uniqueCode:0
+                    }
+                },
+                {
                     $set: {
                         admin: { $arrayElemAt: ["$admin", 0] }
                     }

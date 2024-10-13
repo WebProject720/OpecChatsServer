@@ -22,6 +22,27 @@ export const getGroupDetails = async (req, res) => {
                 )
             )
         }
+
+        let flag = false;
+        
+        if (group?.isGroupPrivate) {
+            flag = group.memberLists.some(element => element === _id) ||
+            group?.TempMembers?.some(element => element === _id) ||
+            group.permanentMember.some(element => element === _id) ||
+            group.admin._id == _id
+        }
+
+        if (!flag && group?.isGroupPrivate) {
+            return res.status(400).json(
+                new ApiError(
+                    'Become a Group Member',
+                    { canAccess: false },
+                    false
+                )
+            )
+        }
+
+
         return res.status(200).json(
             new ApiResponse('Group Data', group, true)
         )

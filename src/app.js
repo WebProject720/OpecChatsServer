@@ -98,9 +98,10 @@ app.use('/api/v1/auth', authRouter);
 import GroupRouter from './Routes/group.router.js';
 app.use('/api/v1/group', GroupRouter);
 import chatsRouter from './Routes/chats.router.js';
-import { log } from 'node:console';
-import { ApiResponse } from './utils/ApiResponse.js';
 app.use('/api/v1/chat', chatsRouter);
+import Guest from './Routes/guest.router.js';
+app.use('/api/v1/guest', Guest);
+
 
 
 

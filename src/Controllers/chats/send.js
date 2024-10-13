@@ -33,13 +33,20 @@ export const send = async (req, res) => {
         }
 
         if (groupFind.isGroupPrivate) {
-            if (!(groupFind.admin == _id || groupFind.memberLists.includes(_id) || groupFind.permanentMember.includes(_id)))
+            let flag = false;
+            flag = groupFind.memberLists.some(element => element === _id) ||
+                groupFind.TempMembers.some(element => element === _id) ||
+                groupFind.permanentMember.some(element => element === _id) ||
+                groupFind.admin._id == _id
+            if (!flag) {
                 return res ? res
                     .status(400)
                     .json(
-                        new ApiError('Permission Denied', undefined, false, 400)
-                    ) : new ApiError('Permission Denied', undefined, false, 400)
+                        new ApiError('permission denied', undefined, false, 400)
+                    ) : new ApiError('permission denied', undefined, false, 400)
+            }
         }
+
         const chat = new Chats({
             msg,
             targetedMsgID,

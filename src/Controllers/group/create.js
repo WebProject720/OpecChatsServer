@@ -37,7 +37,7 @@ export const createGroup = async (req, res) => {
             groupName: name,
             profileImage: image,
             bgImage: bgImage,
-            isGroupPrivate: type == 'public' || !type ? false : false,
+            isGroupPrivate: type.toLowerCase() == 'public' || type ? true : false,
             admin: _id,
             memberAllowedAtSingleTime: memberLimit,
             uniqueCode: code || null
