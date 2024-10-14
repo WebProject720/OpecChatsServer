@@ -34,9 +34,9 @@ export const send = async (req, res) => {
 
         if (groupFind.isGroupPrivate) {
             let flag = false;
-            flag = groupFind.memberLists.some(element => element === _id) ||
-                groupFind.TempMembers.some(element => element === _id) ||
-                groupFind.permanentMember.some(element => element === _id) ||
+            flag = groupFind.memberLists.some(element => element == _id) ||
+                groupFind.TempMembers.some(element => element == _id) ||
+                groupFind.permanentMember.some(element => element == _id) ||
                 groupFind.admin._id == _id
             if (!flag) {
                 return res ? res

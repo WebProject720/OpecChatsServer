@@ -2,9 +2,11 @@ import 'dotenv/config'
 import { ApiResponse } from '../../utils/ApiResponse.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { Groups } from '../../Models/group.model.js';
-import { Types } from 'mongoose';
+import { Mongoose, ObjectId, Types } from 'mongoose';
 import { User } from '../../Models/User.model.js';
 import { getGroup } from '../../components/getGroup.js'
+import { getBasicGroup } from '../../components/basicGroupD.js';
+
 
 export const JoinPrivateChat = async (req, res) => {
     try {
@@ -20,27 +22,7 @@ export const JoinPrivateChat = async (req, res) => {
         }
 
         const groupID = Types.ObjectId.isValid(identifier) ? identifier : 'a3b2c1d4e5f60718293a4b5c';
-        let group = await Groups.aggregate(
-            [
-                {
-                    $match: {
-                        $or: [{ _id: new Types.ObjectId(groupID) }, { groupName: identifier }]
-                    }
-                },
-                {
-                    $project: {
-                        uniqueCode: 1,
-                        groupName: 1,
-                        isGroupPrivate: 1,
-                        TempMembers: 1,
-                        permanentMember: 1,
-                        memberLists: 1,
-                        admin: 1
-                    }
-                }
-            ]
-        );
-        group = group[0]
+        let group = await getBasicGroup(groupID, identifier)
 
         if (!group.isGroupPrivate) {
             return res
@@ -54,18 +36,18 @@ export const JoinPrivateChat = async (req, res) => {
         //check user is already in or not
         let flag = false;
         if (group?.isGroupPrivate) {
-            flag = group.memberLists.some(element => element === _id) ||
-                group?.TempMembers?.some(element => element === _id) ||
-                group.permanentMember.some(element => element === _id) ||
+            flag = group.memberLists.some(element => element == _id) ||
+                group?.TempMembers?.some(element => element == _id) ||
+                group.permanentMember.some(element => element == _id) ||
                 group?.admin?._id == _id
-        }
 
-        if (flag) {
-            return res
-                .status(404)
-                .json(
-                    new ApiError('User Already a Member', { canAccess: true }, false)
-                )
+            if (flag) {
+                return res
+                    .status(404)
+                    .json(
+                        new ApiError('User Already a Member', { canAccess: true }, false)
+                    )
+            }
         }
 
 
@@ -123,7 +105,7 @@ export const JoinPrivateChat = async (req, res) => {
                 }
             )
             if (updatedGroup) {
-                const groupUpdated = await getGroup(null, group._id)
+                const groupUpdated = await getGroup(group._id, null)
                 return res
                     .status(200)
                     .json(

@@ -1,6 +1,7 @@
 import { ApiError } from "../../utils/ApiError.js"
 import { ApiResponse } from '../../utils/ApiResponse.js'
-import { getGroup } from "../../components/getGroup.js";
+import { getBasicGroup } from "../../components/basicGroupD.js";
+import { getGroup } from '../../components/getGroup.js'
 
 export const getGroupDetails = async (req, res) => {
     try {
@@ -11,7 +12,7 @@ export const getGroupDetails = async (req, res) => {
                 new ApiError('Group details must required', undefined, false)
             )
         }
-        const group = await getGroup(groupID, identifier)
+        const group = await getBasicGroup(groupID, identifier)
 
         if (!group) {
             return res.status(404).json(
@@ -24,27 +25,29 @@ export const getGroupDetails = async (req, res) => {
         }
 
         let flag = false;
-        
+
         if (group?.isGroupPrivate) {
-            flag = group.memberLists.some(element => element === _id) ||
-            group?.TempMembers?.some(element => element === _id) ||
-            group.permanentMember.some(element => element === _id) ||
-            group.admin._id == _id
-        }
 
-        if (!flag && group?.isGroupPrivate) {
-            return res.status(400).json(
-                new ApiError(
-                    'Become a Group Member',
-                    { canAccess: false },
-                    false
+            flag = group.memberLists.some(element => element == _id) ||
+                group?.TempMembers?.some(element => element == _id) ||
+                group.permanentMember.some(element => element == _id) ||
+                group.admin._id == _id;
+
+
+            if (!flag && group?.isGroupPrivate) {
+                return res.status(400).json(
+                    new ApiError(
+                        'Become a Group Member',
+                        { canAccess: false },
+                        false
+                    )
                 )
-            )
+            }
         }
 
-
+        const updatedGroup = await getGroup(group._id)
         return res.status(200).json(
-            new ApiResponse('Group Data', group, true)
+            new ApiResponse('Group Data', updatedGroup, true)
         )
     } catch (error) {
         console.log(error);

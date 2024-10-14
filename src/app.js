@@ -48,6 +48,7 @@ io.on('connection', async (socket) => {
         try {
             const cookie = (socket.handshake.headers?.cookie);
             if (!cookie) {
+                io.emit('error-msg', { error: null, msg: "cookie not found", success: false })
                 return { msg: "cookie not found" }
             }
             let string = cookie.slice(cookie.indexOf('=') + 1)
@@ -56,6 +57,7 @@ io.on('connection', async (socket) => {
                 verify = verifyToken(string);
             } catch (error) {
                 console.log(error);
+                io.emit('error-msg', { error, msg: "Token not verified", success: false })
                 return { msg: "Token not verified" }
             }
 
@@ -64,6 +66,7 @@ io.on('connection', async (socket) => {
 
 
             if (!response.success) {
+                io.emit('error-msg', { error: response, msg: "Msg not send", success: false })
                 return { msg: 'Msg not send' }
             }
 

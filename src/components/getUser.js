@@ -45,19 +45,50 @@ export const getUser = async (_id, identifier) => {
                         from: 'Groups',
                         localField: '_id',
                         foreignField: 'permanentMember',
-                        as: 'JoinedGroup',
+                        as: 'JoinedGroup1',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'Groups',
+                        localField: '_id',
+                        foreignField: 'memberLists',
+                        as: 'JoinedGroup2',
+                    }
+                },
+                {
+                    $project: {
+                        // Include all fields from the original document
+                        _id: 1,
+                        // Add all fields using $mergeObjects to maintain original structure
+                        originalFields: '$$ROOT',
+                        JoinedGroup: {
+                            $setUnion: ['$JoinedGroup1', '$JoinedGroup2']
+                        }
+                    }
+                },
+                {
+                    $replaceRoot: {
+                        newRoot: {
+                            $mergeObjects: [
+                                '$originalFields',  // Include all original fields
+                                { JoinedGroup: '$JoinedGroup' } // Include the combined group members
+                            ]
+                        }
                     }
                 },
                 {
                     $project: {
                         password: 0,
                         token: 0,
-                        providerIds: 0
+                        providerIds: 0,
+                        JoinedGroup1: 0,
+                        JoinedGroup2: 0
                     }
                 }
             ]
         )
-
+        //Remove unique code //
         if (!user.length) return false;
         return user[0];
     } catch (error) {
