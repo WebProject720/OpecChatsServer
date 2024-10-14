@@ -4,7 +4,7 @@ import { ApiError } from '../../utils/ApiError.js';
 import { Groups } from '../../Models/group.model.js';
 import { Types } from 'mongoose';
 import { User } from '../../Models/User.model.js';
-
+import { getGroup } from '../../components/getGroup.js'
 
 export const JoinPrivateChat = async (req, res) => {
     try {
@@ -35,7 +35,7 @@ export const JoinPrivateChat = async (req, res) => {
                         TempMembers: 1,
                         permanentMember: 1,
                         memberLists: 1,
-                        admin:1
+                        admin: 1
                     }
                 }
             ]
@@ -55,7 +55,7 @@ export const JoinPrivateChat = async (req, res) => {
         let flag = false;
         if (group?.isGroupPrivate) {
             flag = group.memberLists.some(element => element === _id) ||
-                group.TempMembers.some(element => element === _id) ||
+                group?.TempMembers?.some(element => element === _id) ||
                 group.permanentMember.some(element => element === _id) ||
                 group?.admin?._id == _id
         }
@@ -123,10 +123,11 @@ export const JoinPrivateChat = async (req, res) => {
                 }
             )
             if (updatedGroup) {
+                const groupUpdated = await getGroup(null, group._id)
                 return res
                     .status(200)
                     .json(
-                        new ApiResponse('User Added To group', updatedGroup, true)
+                        new ApiResponse('User Added To group', groupUpdated, true)
                     )
             }
         }
