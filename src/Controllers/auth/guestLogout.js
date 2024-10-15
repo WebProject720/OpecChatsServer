@@ -4,7 +4,6 @@ import 'dotenv/config'
 
 export const GuestLogout = async (req, res) => {
     try {
-        
         const { _id } = req.body;
         // if (!_id) {
         //     return res.status(400).json(
@@ -14,8 +13,9 @@ export const GuestLogout = async (req, res) => {
         return res
             .status(200)
             .clearCookie(process.env.GuestTokenName)
+            .clearCookie(process.env.TokenName)
             .json(
-                new ApiResponse('user logout')
+                new ApiResponse('guest user logout')
             )
 
     } catch (error) {

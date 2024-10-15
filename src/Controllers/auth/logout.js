@@ -13,6 +13,7 @@ export const logout = async (req, res) => {
         return res
             .status(200)
             .clearCookie(process.env.TokenName)
+            .clearCookie(process.env.GuestTokenName)
             .json(
                 new ApiResponse('user logout')
             )
