@@ -19,6 +19,6 @@ authRouter.route('/checkUsername').post(checkUsername)
 authRouter.route('/logout').post(auth, logout)
 
 authRouter.route('/guest').post(GuestLogin)
-authRouter.route('/guestLogout').post(GuestLogout)
+authRouter.route('/guestLogout').post(auth,GuestLogout)
 
 export default authRouter;

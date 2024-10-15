@@ -6,6 +6,7 @@ import { verifyToken } from '../../src/utils/verifyToken.js';
 export const auth = async (req, res, next) => {
     try {
         const cookie = req?.cookies[process.env.TokenName] || req?.cookies[process.env.GuestTokenName];
+        console.log(cookie);
 
         if (!cookie) {
             return res.status(404).json(
