@@ -1,4 +1,5 @@
 import { ApiResponse } from "../../utils/ApiResponse.js";
+import { CookieOption } from "../../utils/cookieOptions.js";
 import { createToken } from "../../utils/getToken.js";
 import 'dotenv/config'
 import { v4 } from 'uuid'
@@ -8,13 +9,8 @@ export const GuestLogin = (req, res) => {
     const TokenName = process.env.GuestTokenName||'GuestToken';
     
     const production = process.env.PRODUCTION == "true";
-    const CookieOptions = {
-        httpOnly: true,     // Cookie accessible only by web server
-        secure: production,       // Cookie sent only over HTTPS
-        expires: new Date(Date.now() + 36000000),    // Cookie expiry time in milliseconds
-        sameSite: production ? 'None' : 'Lax', // Cookie sent only to the same site
-        path: '/',
-    }
+    const CookieOptions = CookieOption(production)
+    
     const guest = { _id: v4(), name: name ? name : "guest" }
     const cookie = createToken(guest);
     return res

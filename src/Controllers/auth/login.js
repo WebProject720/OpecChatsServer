@@ -6,17 +6,12 @@ import { createToken } from "../../utils/getToken.js";
 import 'dotenv/config'
 import { Types } from "mongoose";
 import { getUser } from "../../components/getUser.js";
+import { CookieOption } from "../../utils/cookieOptions.js";
 
 
 export const login = async (req, res) => {
     const production = process.env.PRODUCTION == "true";
-    const CookieOptions = {
-        httpOnly: true,     // Cookie accessible only by web server
-        secure: production,       // Cookie sent only over HTTPS
-        expires: new Date(Date.now() + 36000000),    // Cookie expiry time in milliseconds
-        sameSite: production ? 'None' : 'Lax', // Cookie sent only to the same site
-        path: '/',
-    }
+    const CookieOptions = CookieOption(production);
 
     try {
         const { identifier, password } = req.body;
