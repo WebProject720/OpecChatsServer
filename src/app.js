@@ -38,12 +38,28 @@ var corsOptions = isProduction ? {
 import { send } from './Controllers/chats/send.js';
 export const io = new Server(server)
 io.on('connection', async (socket) => {
-
     socket.on('join-group', (group) => {
         socket.join(group);
         io.to(group).emit('new-user-added', { msg: 'Someone Added', activeUsers: io.sockets.adapter.rooms.get(group).size })
     })
+    socket.on('delete-msg', async (data) => {
+        const user = await getCookie(socket);
+        if (user.success) {
+            const res = await deleteChat({ _id: user?._id, identifier: data?.identifier }, null)
+            if (res.success) {
+                io.to(data.room).emit('deleted-msg', res?.data)
+            } else {
+                io.emit('error-msg', { error: res.msg, msg: "Not Deleted !!", success: false })
+                return { msg: 'Msg not send' }
+            }
+        } else {
+            io.emit('error-msg', { error: user.msg, msg: "Not Deleted !!", success: false })
+            return { msg: 'Msg not send' }
+        }
+    })
+
     socket.on('disconnect', () => { })
+
     socket.on('group-msg', async (msg) => {
         try {
             const cookie = (socket.handshake.headers?.cookie);
@@ -103,6 +119,8 @@ app.use('/api/v1/group', GroupRouter);
 import chatsRouter from './Routes/chats.router.js';
 app.use('/api/v1/chat', chatsRouter);
 import Guest from './Routes/guest.router.js';
+import { deleteChat } from './Controllers/chats/delete.js';
+import { getCookie } from './utils/getCookies.js';
 app.use('/api/v1/guest', Guest);
 
 

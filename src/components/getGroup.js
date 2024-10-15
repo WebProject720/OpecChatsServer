@@ -2,7 +2,6 @@ import { Types } from "mongoose";
 import { Groups } from "../Models/models.js";
 
 
-
 export const getGroup = async (groupID, identifier) => {
 
     const userInfo = {

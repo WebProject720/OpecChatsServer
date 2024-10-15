@@ -2,6 +2,7 @@ import mongoose, { Types } from "mongoose";
 import { Chats, Groups } from "../../Models/models.js";
 import { ApiError } from "../../utils/ApiError.js"
 import { ApiResponse } from '../../utils/ApiResponse.js'
+import { userInfo } from "../../constant.js";
 
 
 export const send = async (req, res) => {
@@ -66,12 +67,41 @@ export const send = async (req, res) => {
                 new: true
             }
         )
+        let AggregateChat;
+        if (chat?.TempID == null) {
 
+            AggregateChat = await Chats.aggregate([
+                {
+                    $match: {
+                        _id: chatDoc._id
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'User',
+                        localField: 'senderID',
+                        foreignField: '_id',
+                        as: 'sender',
+                        pipeline: [
+                            {
+                                $project: userInfo
+                            }
+                        ]
+                    }
+                },
+                {
+                    $set: {
+                        sender: { $arrayElemAt: ["$sender", 0] }
+                    }
+                }
+            ])
+
+        }
         return res ? res
             .status(200)
             .json(
                 new ApiResponse('Msg send', { newGroup }, true, 200)
-            ) : new ApiResponse('Msg send', chatDoc, true, 200)
+            ) : new ApiResponse('Msg send', chat?.TempID == null ? AggregateChat[0] : chatDoc, true, 200)
     } catch (error) {
         console.log(error);
 
