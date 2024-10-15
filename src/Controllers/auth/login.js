@@ -20,8 +20,8 @@ export const login = async (req, res) => {
 
     try {
         const { identifier, password } = req.body;
-        const cookie = req?.cookies[process.env.TokenName];
         const TokenName = process.env.TokenName||'Token';
+        const cookie = req?.cookies[TokenName];
 
         if (cookie) {
             return res.status(404).json(

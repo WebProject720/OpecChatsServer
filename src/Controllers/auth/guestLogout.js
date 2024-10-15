@@ -10,10 +10,10 @@ export const GuestLogout = async (req, res) => {
         //         new ApiError('Session not found')
         //     )
         // }
+        
         return res
             .status(200)
-            .clearCookie(process.env.GuestTokenName)
-            .clearCookie(process.env.TokenName)
+            .clearCookie(process.env.GuestTokenName, { path: '/' })
             .json(
                 new ApiResponse('guest user logout')
             )
