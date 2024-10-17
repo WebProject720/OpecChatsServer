@@ -7,6 +7,8 @@ import { userInfo } from "../../constant.js";
 export const deleteChat = async (req, res) => {
     try {
         const { _id, identifier } = req?.body || req;
+        console.log(_id,identifier);
+        
         if (!_id) {
             return res ?
                 res
@@ -31,6 +33,8 @@ export const deleteChat = async (req, res) => {
         const chatDoc = await Chats.findOne({
             _id: identifier
         })
+        console.log(chatDoc);
+        
 
         if (chatDoc?.senderID != _id && chatDoc?.TempID != _id) {
             return res ?
@@ -62,6 +66,8 @@ export const deleteChat = async (req, res) => {
 
 
     } catch (error) {
+        console.log(error);
+        
         return res ?
             res
                 .status(500)

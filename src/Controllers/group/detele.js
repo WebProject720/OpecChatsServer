@@ -6,15 +6,20 @@ import { getGroup } from "../../components/getGroup.js";
 export const deleteGroup = async (req, res) => {
     try {
         const { _id, groupID, identifier } = req.body;
-        if (!(groupID||identifier)) {
+        if (!(groupID || identifier)) {
             return res.status(404).json(
                 new ApiError('All fields required', undefined, false)
             )
         }
-       
+
         const g = await getGroup(groupID, identifier);
-        
-        if (g.admin._id != _id) {
+        if (!g) {
+            return res.status(404).json(
+                new ApiResponse('Group not found', undefined, false)
+            )
+        }
+
+        if (g?.admin?._id != _id) {
             return res.status(404).json(
                 new ApiResponse('Group not Owned by user', undefined, false)
             )

@@ -46,10 +46,11 @@ io.on('connection', async (socket) => {
         const user = await getCookie(socket);
         if (user.success) {
             const res = await deleteChat({ _id: user?._id, identifier: data?.identifier }, null)
+            
             if (res.success) {
                 io.to(data.room).emit('deleted-msg', res?.data)
             } else {
-                io.emit('error-msg', { error: res.msg, msg: "Not Deleted !!", success: false })
+                io.emit('error-msg', { error: res.msg, msg: "Not Deleted !", success: false })
                 return { msg: 'Msg not send' }
             }
         } else {
