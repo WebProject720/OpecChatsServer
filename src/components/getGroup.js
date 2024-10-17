@@ -134,7 +134,7 @@ export const getGroup = async (groupID, identifier) => {
                 },
                 {
                     $project:{
-                        uniqueCode:0
+                        uniqueCode:0,
                     }
                 },
                 {
