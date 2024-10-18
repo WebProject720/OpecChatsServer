@@ -8,7 +8,7 @@ export const getGroup = async (groupID, identifier) => {
         _id: 1,
         username: 1,
         email: 1,
-        profileImage:1
+        profileImage: 1
     }
 
     try {
@@ -30,7 +30,7 @@ export const getGroup = async (groupID, identifier) => {
                         as: 'admin',
                         pipeline: [
                             {
-                                $project:  userInfo
+                                $project: userInfo
                             }
                         ]
                     }
@@ -43,8 +43,8 @@ export const getGroup = async (groupID, identifier) => {
                         as: 'permanentMember',
                         pipeline: [
                             {
-                                $project:  userInfo
-                                
+                                $project: userInfo
+
                             }
                         ]
                     }
@@ -57,8 +57,8 @@ export const getGroup = async (groupID, identifier) => {
                         as: 'waitingMember',
                         pipeline: [
                             {
-                                $project:  userInfo
-                                
+                                $project: userInfo
+
                             }
                         ]
                     }
@@ -71,8 +71,8 @@ export const getGroup = async (groupID, identifier) => {
                         as: 'memberLists',
                         pipeline: [
                             {
-                                $project:  userInfo
-                                
+                                $project: userInfo
+
                             }
                         ]
                     }
@@ -85,8 +85,8 @@ export const getGroup = async (groupID, identifier) => {
                         as: 'removedMembers',
                         pipeline: [
                             {
-                                $project:  userInfo
-                                
+                                $project: userInfo
+
                             }
                         ]
                     }
@@ -99,7 +99,7 @@ export const getGroup = async (groupID, identifier) => {
                         as: 'blockedMembers',
                         pipeline: [
                             {
-                                $project:  userInfo
+                                $project: userInfo
                             }
                         ]
                     }
@@ -125,16 +125,30 @@ export const getGroup = async (groupID, identifier) => {
                                 }
                             },
                             {
+                                $lookup: {
+                                    from: 'Chats',
+                                    localField: 'targetedMsgID',
+                                    foreignField: '_id',
+                                    as: 'replyTo',
+                                }
+                            },
+                            {
                                 $set: {
                                     sender: { $arrayElemAt: ["$sender", 0] }
                                 }
                             }
+                            ,
+                            {
+                                $set: {
+                                    replyTo: { $arrayElemAt: ["$replyTo", 0] }
+                                }
+                            },
                         ]
                     }
                 },
                 {
-                    $project:{
-                        uniqueCode:0,
+                    $project: {
+                        uniqueCode: 0,
                     }
                 },
                 {

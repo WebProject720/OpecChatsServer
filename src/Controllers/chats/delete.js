@@ -1,13 +1,10 @@
-import mongoose, { Types } from "mongoose";
-import { Chats, Groups } from "../../Models/models.js";
+import { Chats } from "../../Models/models.js";
 import { ApiError } from "../../utils/ApiError.js"
 import { ApiResponse } from '../../utils/ApiResponse.js'
-import { userInfo } from "../../constant.js";
 
 export const deleteChat = async (req, res) => {
     try {
         const { _id, identifier } = req?.body || req;
-        console.log(_id,identifier);
         
         if (!_id) {
             return res ?

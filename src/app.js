@@ -78,7 +78,7 @@ io.on('connection', async (socket) => {
                 return { msg: "Token not verified" }
             }
 
-            const chatObject = { _id: verify?._id || null, msg: msg?.msg, identifier: msg?.identifier };
+            const chatObject = { _id: verify?._id || null, ...msg };
             const response = await send({ body: chatObject }, false);
 
 

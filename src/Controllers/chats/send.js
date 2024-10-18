@@ -9,7 +9,7 @@ export const send = async (req, res) => {
     try {
         //_id : permanent User
         // __id : temp user
-        const { _id, identifier, canUpdate, targetedMsgID, msg } = req.body;
+        const { _id, identifier, canUpdate, targetedMsgID, msg, replyTo } = req.body;
 
 
         if (!(identifier && msg)) {
@@ -53,7 +53,8 @@ export const send = async (req, res) => {
             targetedMsgID,
             canUpdate,
             senderID: mongoose.Types.ObjectId.isValid(_id) ? _id : null,
-            TempID: mongoose.Types.ObjectId.isValid(_id) ? null : _id
+            TempID: mongoose.Types.ObjectId.isValid(_id) ? null : _id,
+            targetedMsgID: replyTo
         });
         const chatDoc = await chat.save();
         const newGroup = await Groups.findOneAndUpdate(
@@ -67,9 +68,10 @@ export const send = async (req, res) => {
                 new: true
             }
         )
+
+
         let AggregateChat;
         if (chat?.TempID == null) {
-
             AggregateChat = await Chats.aggregate([
                 {
                     $match: {
@@ -90,18 +92,57 @@ export const send = async (req, res) => {
                     }
                 },
                 {
+                    $lookup: {
+                        from: 'Chats',
+                        localField: 'targetedMsgID',
+                        foreignField: '_id',
+                        as: 'replyTo',
+                    }
+                },
+                {
                     $set: {
                         sender: { $arrayElemAt: ["$sender", 0] }
                     }
-                }
+                },
+                {
+                    $set: {
+                        replyTo: { $arrayElemAt: ["$replyTo", 0] }
+                    }
+                },
             ])
-
+        } else {
+            AggregateChat = await Chats.aggregate([
+                {
+                    $match: {
+                        _id: chatDoc._id
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'Chats',
+                        localField: 'targetedMsgID',
+                        foreignField: '_id',
+                        as: 'replyTo',
+                    }
+                },
+                {
+                    $set: {
+                        sender: { $arrayElemAt: ["$sender", 0] }
+                    }
+                },
+                {
+                    $set: {
+                        replyTo: { $arrayElemAt: ["$replyTo", 0] }
+                    }
+                },
+            ])
         }
+
         return res ? res
             .status(200)
             .json(
                 new ApiResponse('Msg send', { newGroup }, true, 200)
-            ) : new ApiResponse('Msg send', chat?.TempID == null ? AggregateChat[0] : chatDoc, true, 200)
+            ) : new ApiResponse('Msg send', AggregateChat[0], true, 200)
     } catch (error) {
         console.log(error);
 
