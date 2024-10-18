@@ -10,8 +10,9 @@ const app = express();
 const server = createServer(app)
 
 
-app.use(express.json({ limit: "16kb" }))
-app.use(express.urlencoded({ extended: true, limit: "16kb" }))
+app.use(express.json())
+// app.use(express.json({ limit: "16kb" }))
+app.use(express.urlencoded({ extended: true }))
 app.use(express.static("public"));
 app.use(cookieParser());
 
@@ -46,7 +47,7 @@ io.on('connection', async (socket) => {
         const user = await getCookie(socket);
         if (user.success) {
             const res = await deleteChat({ _id: user?._id, identifier: data?.identifier }, null)
-            
+
             if (res.success) {
                 io.to(data.room).emit('deleted-msg', res?.data)
             } else {
@@ -122,7 +123,6 @@ import Guest from './Routes/guest.router.js';
 import { deleteChat } from './Controllers/chats/delete.js';
 import { getCookie } from './utils/getCookies.js';
 app.use('/api/v1/guest', Guest);
-
 
 
 

@@ -22,6 +22,6 @@ authRouter.route('/logout').post(auth, logout)
 authRouter.route('/google').post(googleLogin)
 
 authRouter.route('/guest').post(GuestLogin)
-authRouter.route('/guestLogout').post(auth,GuestLogout)
+authRouter.route('/guestLogout').post(auth, GuestLogout)
 
 export default authRouter;

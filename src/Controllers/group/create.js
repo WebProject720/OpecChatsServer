@@ -7,11 +7,11 @@ export const createGroup = async (req, res) => {
         const {
             name,
             _id,
-            image,
             type,
             memberLimit,
             bgImage,
-            code
+            code,
+            profileImage
         } = req.body;
 
         if (!(name && _id)) {
@@ -32,10 +32,10 @@ export const createGroup = async (req, res) => {
                     new ApiError('Group name already in use')
                 )
         }
-
+        
         const group = new Groups({
             groupName: name,
-            profileImage: image,
+            profileImage,
             bgImage: bgImage,
             isGroupPrivate: !(type.toLowerCase() == 'public'),
             admin: _id,
@@ -44,7 +44,7 @@ export const createGroup = async (req, res) => {
         });
 
         const response = await group.save();
-        delete response.uniqueCode;
+        response.uniqueCode=null;
 
         if (response) {
             return res

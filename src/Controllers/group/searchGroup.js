@@ -24,7 +24,8 @@ export const searchGroup = async (req, res) => {
                     _id: 1,
                     isGroupPrivate: 1,
                     createdAt: 1,
-                    updatedAt: 1
+                    updatedAt: 1,
+                    profileImage:1
                 }
             },
             {
