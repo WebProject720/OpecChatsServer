@@ -30,7 +30,6 @@ export const deleteChat = async (req, res) => {
         const chatDoc = await Chats.findOne({
             _id: identifier
         })
-        console.log(chatDoc);
         
 
         if (chatDoc?.senderID != _id && chatDoc?.TempID != _id) {

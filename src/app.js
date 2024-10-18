@@ -93,7 +93,6 @@ io.on('connection', async (socket) => {
             console.log(error);
             return;
         }
-
     })
 })
 
