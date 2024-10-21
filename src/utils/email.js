@@ -34,6 +34,7 @@ export const sendMail = async (tagertEmail) => {
 
         const email = await transport.sendMail(mailOptions);
         if (!email) {
+            console.log(email);
             return false
         }
         const del = await otp.deleteOne({ email: tagertEmail });
@@ -45,6 +46,8 @@ export const sendMail = async (tagertEmail) => {
 
         return true
     } catch (error) {
+        console.log(error);
+        
         return false
     }
 };

@@ -11,6 +11,13 @@ export const checkUsername = async (req, res) => {
             .status(404)
             .json(new ApiError('Username required'))
         }
+        if(username?.length<5){
+            return res
+            .status(404)
+            .json(
+                new ApiError('must greater then 4')
+            )
+        }
         const user =await User.findOne({username});
         if(user){
             return res

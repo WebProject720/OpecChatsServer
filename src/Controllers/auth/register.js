@@ -44,6 +44,8 @@ export const register = async (req, res) => {
         const response = await newUser.save();
         if (response) {
             const emailSend = await sendMail(email);
+            console.log(emailSend);
+            
             if (!emailSend) {
                 return res
                     .status(404)
