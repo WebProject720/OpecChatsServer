@@ -19,7 +19,7 @@ export async function getBasicGroup(groupID, identifier, options) {
             [
                 {
                     $match: {
-                        $or: [{ _id: new Types.ObjectId(groupID) }, { groupName: identifier }]
+                        $or: [{ _id: new Types.ObjectId(groupID) }, { groupName: identifier.trim() }]
                     }
                 },
                 {
@@ -27,6 +27,7 @@ export async function getBasicGroup(groupID, identifier, options) {
                 }
             ]
         );
+
         group = group[0];
         return group
     } catch (error) {

@@ -10,7 +10,8 @@ import { getBasicGroup } from '../../components/basicGroupD.js';
 
 export const JoinPrivateChat = async (req, res) => {
     try {
-        const { _id, code, identifier } = req.body;
+        let { _id, code, identifier } = req.body;
+        identifier = identifier?.trim();
 
 
         if (!code || !identifier) {
@@ -22,9 +23,17 @@ export const JoinPrivateChat = async (req, res) => {
         }
 
         const groupID = Types.ObjectId.isValid(identifier) ? identifier : 'a3b2c1d4e5f60718293a4b5c';
-        let group = await getBasicGroup(groupID, identifier)
+        let group = await getBasicGroup(groupID, identifier);
 
-        if (!group.isGroupPrivate) {
+        if (!group) {
+            return res
+                .status(404)
+                .json(
+                    new ApiError('Group Not Found', { canAccess: false }, false)
+                )
+        }
+
+        if (!group?.isGroupPrivate) {
             return res
                 .status(404)
                 .json(

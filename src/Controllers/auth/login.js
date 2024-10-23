@@ -14,8 +14,9 @@ export const login = async (req, res) => {
     const CookieOptions = CookieOption(production);
 
     try {
-        const { identifier, password } = req.body;
-        const TokenName = process.env.TokenName||'Token';
+        let { identifier, password } = req.body;
+        identifier = identifier?.trim()
+        const TokenName = process.env.TokenName || 'Token';
         const cookie = req?.cookies[TokenName];
 
         if (cookie) {
@@ -35,7 +36,7 @@ export const login = async (req, res) => {
 
         const user = await User.findOne(
             {
-                $or: [{ email: identifier }, { username: identifier }, { _id: new Types.ObjectId(validID) }]
+                $or: [{ email: identifier.toLowerCase() }, { username: identifier }, { _id: new Types.ObjectId(validID) }]
             }
         ).select('password')
 

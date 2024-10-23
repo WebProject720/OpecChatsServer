@@ -7,7 +7,10 @@ import 'dotenv/config'
 
 export const register = async (req, res) => {
     try {
-        const { email, username, password } = req.body;
+        let { email, username, password } = req.body;
+        email=email?.trim();
+        username=username?.trim();
+        password=password?.trim()
         const cookie = req?.cookies[process.env.TokenName];
 
         if (cookie) {
@@ -37,7 +40,7 @@ export const register = async (req, res) => {
         const encodePass = await bcrypt.hash(password, 10);
         const newUser = await User({
             username,
-            email,
+            email:email.toLowerCase(),
             password: encodePass
         })
 

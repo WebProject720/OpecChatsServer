@@ -4,7 +4,7 @@ import { ApiResponse } from '../../utils/ApiResponse.js'
 
 export const createGroup = async (req, res) => {
     try {
-        const {
+        let {
             name,
             _id,
             type,
@@ -13,6 +13,9 @@ export const createGroup = async (req, res) => {
             code,
             profileImage
         } = req.body;
+
+        code = code?.trim();
+        name = name?.trim();
 
         if (!(name && _id)) {
             return res.status(400).json(
@@ -32,7 +35,7 @@ export const createGroup = async (req, res) => {
                     new ApiError('Group name already in use')
                 )
         }
-        
+
         const group = new Groups({
             groupName: name,
             profileImage,
@@ -44,7 +47,7 @@ export const createGroup = async (req, res) => {
         });
 
         const response = await group.save();
-        response.uniqueCode=null;
+        response.uniqueCode = null;
 
         if (response) {
             return res
